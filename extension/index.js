@@ -18,6 +18,7 @@ function create_title_element() {
 function create_subtitle_element() {
     let subtitle_element = document.createElement("div"); 
     subtitle_element.style.fontSize = "12px";
+    subtitle_element.style.marginBottom = "5px";
 
     return subtitle_element;
 }
