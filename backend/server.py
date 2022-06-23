@@ -1,7 +1,7 @@
 import json
 import pendulum
 from flask import Flask, jsonify, request
-from lib_42api.intra import ic
+from intra import ic
 
 ic.progress_bar=True
 
