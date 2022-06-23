@@ -1,7 +1,7 @@
 {
 	"name": "Intra42Nova",
-	"description": "Adds White Nova stats to Intra profile web.",
-	"author": "m00nbyt3",
+	"description": "",
+	"author": "apavel ycarro alvrodri",
 	"version": "1.0",
 	"manifest_version": 3,
 	"content_scripts": [{
