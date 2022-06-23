@@ -1,0 +1,12 @@
+{
+	"name": "Intra42Nova",
+	"description": "Adds White Nova stats to Intra profile web.",
+	"author": "m00nbyt3",
+	"version": "1.0",
+	"manifest_version": 3,
+	"content_scripts": [{
+        "run_at": "document_end",
+        "js": ["index.js"],
+        "matches": ["https://profile.intra.42.fr/*"]
+    }]
+}
