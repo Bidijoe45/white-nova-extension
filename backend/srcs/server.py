@@ -57,8 +57,7 @@ def index():
     white_nova_start = pendulum.datetime(2022, 6, 17)
     options = request.args.to_dict()
     user_login = options.get('login') 
-
-    date_range = get_nova_range(white_nova_start);
+    date_range = get_nova_range(white_nova_start)
 
     try:
         time = get_time_between_dates(user_login, date_range['start'], date_range['end'], white_nova_start)
@@ -71,7 +70,8 @@ def index():
             "raw_hours": time['raw_hours'],
             "start": date_range['start'].format("DD/MM/YYYY"),
             "end": date_range['end'].format("DD/MM/YYYY"),
-            "evaluations": historic() 
+            "evaluations": historic(),
+            "events": events()
     }
 
     response = jsonify(payload)
@@ -92,12 +92,28 @@ def historic():
     }
 
     try:
-        historic = ic.get(f"/users/{user_login}/correction_point_historics", params=params);
+        historic = ic.get(f"/users/{user_login}/correction_point_historics", params=params)
     except:
         return jsonify({"ok": 0})
     
-    return len(historic.json()) 
+    return len(historic.json())
+
+def events():
+    white_nova_start = pendulum.datetime(2022, 6, 17)
+    options = request.args.to_dict()
+    user_login = options.get('login')
+    date_range = get_nova_range(white_nova_start)
+
+    params = {
+        "sort": "-created_at",
+        "range[created_at]": f"{date_range['start'].to_date_string()},{date_range['end'].to_date_string()}"
+    }
+
+    try:
+        events = ic.get(f"/users/{user_login}/events_users", params=params)
+    except:
+        return jsonify({"ok": 0})
+    return len(events.json())
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8080)
-
