@@ -1,5 +1,6 @@
 import json
 import pendulum
+import datetime
 from flask import Flask, jsonify, request
 from intra import ic
 
@@ -14,41 +15,25 @@ def get_nova_range(white_nova_start):
     end = white_nova_start.add(days=14)
 
     while (actual_date.timestamp() >= end.timestamp()):
-        white_nova_start = white_nova_start.add(days=14);
+        white_nova_start = white_nova_start.add(days=14)
         end = end.add(days=14)
 
     return {"start": white_nova_start, "end": end}
 
 def get_time_between_dates(user_login, start_date, end_date, white_nova_start) -> dict:
     params = {
-            #"range[begin_at]":f"{start_date.to_date_string()},{end_date.to_date_string()}",
-            "page[size]": 100
+        "begin_at": f"{start_date}",
+        "end_at": f"{end_date}"
     }
 
-    locations = ic.pages_threaded(f"/users/{user_login}/locations", params=params)
-
-    total = 0 
-
-    for location in locations:
-
-        location_end_at = pendulum.now()
-
-        if (location['end_at'] is not None):
-            location_end_at = pendulum.parse(location['end_at'])
-        
-        if (location_end_at.timestamp() < white_nova_start.timestamp()): 
-            continue
-
-        location_begin_at = pendulum.parse(location['begin_at'])
-        
-        if (location_begin_at.timestamp() < white_nova_start.timestamp()):
-            location_begin_at = white_nova_start
-
-        total = total + (location_end_at.timestamp() - location_begin_at.timestamp())
-
-    raw_hours = total / 60 / 60
-    hours = int(total / 60 / 60)
-    minutes = int((raw_hours - hours) * 60) 
+    locations = ic.get(f"/users/{user_login}/locations_stats", params=params)
+    total = datetime.timedelta()
+    for k, v in locations.json().items():
+        (h, m, s) = v.split(':')
+        total += datetime.timedelta(hours=int(h), minutes=int(m))
+    raw_hours = total.total_seconds() / 60 / 60
+    hours = int(total.total_seconds() / 60 / 60)
+    minutes = int((raw_hours - hours) * 60)
 
     return {"hours": hours, "minutes": minutes, "raw_hours": raw_hours}
 
@@ -71,7 +56,8 @@ def index():
             "start": date_range['start'].format("DD/MM/YYYY"),
             "end": date_range['end'].format("DD/MM/YYYY"),
             "evaluations": historic(),
-            "events": events()
+            "events": events(),
+            "next_cycle": int((date_range['end'].timestamp() - pendulum.now().timestamp()) / 60 / 60 / 24)
     }
 
     response = jsonify(payload)
