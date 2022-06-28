@@ -27,10 +27,35 @@ class Switch {
 }
 
 class ProgressBar {
-    constructor() {
-
+    constructor(container, progress, text) {
+        this.container_ = container;
+        this.progress_bar_ = this.container_.querySelector("#progress-bar-nova");
+        this.progress_bar_text_ = this.container_.querySelector("#progress-bar-text");
+        this.progress = progress;
+        this.text = text;
     }
 
+    get progress() {
+        return this.progress_;
+    }
+
+    set progress(value) {
+        if (value >= 100) {
+            this.progress_ = 100;
+            this.progress_bar_.style.borderRadius = "5px";
+        }
+
+        this.progress_bar_.style.width = this.progress_ + "%";
+    }
+
+    get text() {
+        return this.text_;
+    }
+
+    set text(value) {
+        this.text_ = value;
+        this.progress_bar_text_.innerHTML = this.text_;
+    }
 
 }
 
@@ -48,6 +73,8 @@ class Application {
         goals_container.innerHTML = goals_container.innerHTML + HTML_text;
         goals_container.style.position = "relative";
 
+        //switch button
+
         this.switch_blackhole = document.getElementById("switch-blackhole");
         this.blackhole_body = document.getElementById("blackhole-date");
 
@@ -58,6 +85,11 @@ class Application {
         this.blackhole_body.style.display = "none";
 
         this.switch = new Switch(this.switch_nova, this.nova_body, this.switch_blackhole, this.blackhole_body);
+        
+        //progress bar
+        const progress_bar_container = document.getElementById("progress-bar-container");
+        this.progres_bar = new ProgressBar(progress_bar_container, 50, "White Nova");
+
     }
 
 }
