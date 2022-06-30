@@ -5,6 +5,7 @@ import json
 import time
 import logging
 import requests
+import requests_cache
 import threading
 
 from tqdm import tqdm
@@ -13,8 +14,10 @@ from copy import deepcopy
 from pygments import highlight
 from pygments.lexers.data import JsonLexer
 from pygments.formatters.terminal import TerminalFormatter
+from datetime import timedelta
 
 requests.packages.urllib3.disable_warnings()
+requests_cache.install_cache('demo_cache', expire_after=timedelta(minutes=30))
 
 LOG = logging.getLogger(__name__)
 

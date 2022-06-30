@@ -28,7 +28,7 @@ def get_time_between_dates(user_login, start_date, end_date, white_nova_start) -
 
     locations = ic.get(f"/users/{user_login}/locations_stats", params=params)
     total = datetime.timedelta()
-    for k, v in locations.json().items():
+    for _, v in locations.json().items():
         (h, m, s) = v.split(':')
         total += datetime.timedelta(hours=int(h), minutes=int(m))
     raw_hours = total.total_seconds() / 60 / 60
