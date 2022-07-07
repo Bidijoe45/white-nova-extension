@@ -4,9 +4,14 @@
 	"author": "apavel ycarro alvrodri",
 	"version": "1.0",
 	"manifest_version": 3,
+	"web_accessible_resources":[{
+      "matches": ["https://profile.intra.42.fr/*"],
+      "resources": ["layout.html"]
+  	}],
 	"content_scripts": [{
         "run_at": "document_end",
         "js": ["index.js"],
-        "matches": ["https://profile.intra.42.fr/*"]
+        "matches": ["https://profile.intra.42.fr/*"],
+		"css" : ["style.css"]
     }]
 }
