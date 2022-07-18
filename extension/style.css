@@ -1,0 +1,48 @@
+.panel-svg {
+	height: 21px;
+    cursor: pointer;
+}
+
+#panel-container {
+	
+	display: flex;
+	justify-content: space-between;
+	width: 50%;
+	margin: 0 auto 11px auto;
+}
+
+#progress-bar-container {
+	position: relative;
+	background-color: black;
+	border-radius: 5px;
+}
+
+#progress-bar-text {
+	position: absolute;
+	width: 100%;
+	text-align: center;
+	top: 10%;
+}
+
+#progress-bar-nova {
+	height: 35px;
+	width: 50%;
+	background-color: cyan;
+	border-radius: 5px 0 0 5px;
+}
+
+#countdown-text {
+	font-size: 31px;
+	text-align: center;
+	margin-bottom: 11px;
+}
+
+.switch-svg {
+	height: 20px;
+}
+
+.switch-button {
+	position: absolute;
+	top: 10px;
+	left: 10px;
+}
