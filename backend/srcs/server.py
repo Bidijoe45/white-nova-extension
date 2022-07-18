@@ -39,7 +39,7 @@ def get_time_between_dates(user_login, start_date, end_date, white_nova_start) -
 
 @app.route('/', methods=["GET"])
 def index(): 
-    white_nova_start = pendulum.datetime(2022, 6, 17)
+    white_nova_start = pendulum.from_format('2022-09-15 12', 'YYYY-MM-DD HH')
     options = request.args.to_dict()
     user_login = options.get('login') 
     date_range = get_nova_range(white_nova_start)
@@ -65,7 +65,7 @@ def index():
     return response
 
 def historic():
-    white_nova_start = pendulum.datetime(2022, 6, 17)
+    white_nova_start = pendulum.from_format('2022-09-15 12', 'YYYY-MM-DD HH')
     options = request.args.to_dict()
     user_login = options.get('login') 
 
@@ -85,7 +85,7 @@ def historic():
     return len(historic.json())
 
 def events():
-    white_nova_start = pendulum.datetime(2022, 6, 17)
+    white_nova_start = pendulum.from_format('2022-09-15 12', 'YYYY-MM-DD HH')
     options = request.args.to_dict()
     user_login = options.get('login')
     date_range = get_nova_range(white_nova_start)
