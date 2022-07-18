@@ -1,7 +1,6 @@
 .panel-svg {
-
 	height: 21px;
-
+    cursor: pointer;
 }
 
 #panel-container {

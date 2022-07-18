@@ -107,6 +107,7 @@ class Application {
         this.getPanelButtons();
         this.addButtonsEvents();
         this.setWhiteNovaProgressBar();
+        this.setButtonsDefault();
         this.setButtonsCompleted();
     }
 
@@ -148,7 +149,7 @@ class Application {
             }
 
             this.resetButtons();
-            this.time_button.style.opacity = "0.5";
+            this.time_button.style.color = this.coalition_color;
             this.setTimeProgressBar();
             this.time_selected = true;
         });
@@ -161,7 +162,7 @@ class Application {
             }
 
             this.resetButtons();
-            this.evaluations_button.style.opacity = "0.5";
+            this.evaluations_button.style.color = this.coalition_color;
             this.setEvaluationsProgressBar();
             this.evaluations_selected = true;
         });
@@ -174,16 +175,16 @@ class Application {
             }
 
             this.resetButtons();
-            this.events_button.style.opacity = "0.5";
+            this.events_button.style.color = this.coalition_color;
             this.setEventsProgressBar();
             this.events_selected = true;
         });
     }
 
     resetButtons() {
-        this.time_button.style.opacity = "1";
-        this.evaluations_button.style.opacity = "1";
-        this.events_button.style.opacity = "1";
+        this.time_button.style.color = "white";
+        this.evaluations_button.style.color = "white";
+        this.events_button.style.color = "white";
 
         this.time_selected = false;
         this.evaluations_selected = false;
@@ -193,13 +194,12 @@ class Application {
     setWhiteNovaProgressBar() {
 
         this.progress_bar.progress = 0;
-        this.progress_bar.text = "White Nova incompleted"
+        this.progress_bar.text = "White Nova incomplete"
 
         if (this.isWhiteNovaCompleted()) {
             this.progress_bar.progress = 100;
-            this.progress_bar.text = "White Nova completed"
+            this.progress_bar.text = "White Nova complete"
         }
-
     }
 
     setTimeProgressBar() {
@@ -226,16 +226,19 @@ class Application {
         return false;
     }
 
+    setButtonsDefault() {
+        this.time_button.style.opacity = 0.4;
+        this.evaluations_button.style.opacity = 0.4;
+        this.events_button.style.opacity = 0.4;
+    }
+
     setButtonsCompleted() {
         if (this.hours >= 12)
-        {
-            console.log(this.coalition_color);
-            this.time_button.style.color = this.coalition_color;
-        }
+            this.time_button.style.opacity = 1;
         if (this.evaluations >= 2)
-            this.evaluations_button.style.color = this.coalition_color;
+            this.evaluations_button.style.opacity = 1;
         if (this.events >= 2)
-            this.events_button.style.color = this.coalition_color;
+            this.events_button.style.opacity = 1;
     }
 
 }
