@@ -104,6 +104,9 @@ class Application {
         const progress_bar_container = document.getElementById("progress-bar-container");
         this.progress_bar = new ProgressBar(progress_bar_container, 50, "White Nova", this.coalition_color);
 
+		const contdown_text = document.getElementById('countdown-text');
+		contdown_text.innerHTML = this.days_left + " days left until next cycle";
+
         this.getPanelButtons();
         this.addButtonsEvents();
         this.setWhiteNovaProgressBar();
@@ -205,7 +208,7 @@ class Application {
     setTimeProgressBar() {
         const progress = this.raw_hours / 12 * 100;
         this.progress_bar.progress = progress;
-        this.progress_bar.text = this.hours + " hours " + this.minutes + " minutes ";
+        this.progress_bar.text = this.hours + "h " + this.minutes + "m / 12 hours";
     }
 
     setEvaluationsProgressBar() {
