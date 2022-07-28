@@ -1,3 +1,5 @@
 config.yml
 venv
 __pycache__
+white-nova-chrome*
+white-nova-firefox

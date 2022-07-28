@@ -49,6 +49,9 @@ def index():
     except:
         return jsonify({"ok": 0, "message": "Error"})
 
+    print(date_range['end'].timestamp())
+    print(pendulum.now().timestamp())
+
     payload = {
             "hours": time['hours'],
             "minutes": time['minutes'],

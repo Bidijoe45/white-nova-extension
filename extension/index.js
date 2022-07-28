@@ -55,7 +55,7 @@ class ProgressBar {
 
     set text(value) {
         this.text_ = value;
-        this.progress_bar_text_.innerHTML = this.text_;
+        this.progress_bar_text_.setHTML(this.text_);
     }
 
 }
@@ -77,7 +77,7 @@ class Application {
     }
 
     async init() {
-        const HTML_file = await fetch(chrome.runtime.getURL("layout.html"));
+        const HTML_file = await fetch(browser.runtime.getURL("layout.html"));
         const HTML_text = await HTML_file.text();
         const goals_container = document.getElementById("goals_container");
 
@@ -85,7 +85,7 @@ class Application {
         this.getCoalitionColor();
         await this.getLoginData();
 
-        goals_container.innerHTML = goals_container.innerHTML + HTML_text;
+        goals_container.setHTML(goals_container.innerHTML + HTML_text);
         goals_container.style.position = "relative";
 
         //switch button
@@ -105,7 +105,7 @@ class Application {
         this.progress_bar = new ProgressBar(progress_bar_container, 50, "White Nova", this.coalition_color);
 
 		const contdown_text = document.getElementById('countdown-text');
-		contdown_text.innerHTML = this.days_left + " days left until next cycle";
+		contdown_text.setHTML(this.days_left + " days left until next cycle");
 
         this.getPanelButtons();
         this.addButtonsEvents();
