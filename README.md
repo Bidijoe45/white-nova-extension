@@ -16,7 +16,7 @@ Hay que tener en cuenta que es un trabajo en progreso, existen numerosos fallos 
 
 ### CONTRIBUCIONES
 
-Este repositorio se ha creado con una continua evolución en mente. Cualquier persona que quiera contribuir o proponer nuevas ideas es más que bienvenida. Podeis crear una pull request o contactar con nosotros a través de slack.
+Este repositorio se ha creado con una continua evolución en mente. Cualquier persona que quiera contribuir o proponer nuevas ideas es más que bienvenida. Podéis crear una pull request o contactar con nosotros a través de slack.
 
 ### CONTRIBUIDORES
 
