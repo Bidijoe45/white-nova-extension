@@ -5,6 +5,11 @@ name = "pypi"
 
 [packages]
 sqlalchemy = "*"
+pyyaml = "*"
+requests = "*"
+certifi = "==2017.4.17"
+tqdm = "*"
+pygments = "*"
 
 [dev-packages]
 

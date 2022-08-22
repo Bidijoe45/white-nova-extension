@@ -13,7 +13,6 @@ from copy import deepcopy
 from pygments import highlight
 from pygments.lexers.data import JsonLexer
 from pygments.formatters.terminal import TerminalFormatter
-from datetime import timedelta
 
 requests.packages.urllib3.disable_warnings()
 
@@ -24,7 +23,7 @@ class IntraAPIClient(object):
 
     def __init__(self, progress_bar=False):
         base_dir = os.path.dirname(os.path.realpath(__file__))
-        with open(base_dir + '/../includes/config.yml', 'r') as cfg_stream:
+        with open(base_dir + '/../config.yml', 'r') as cfg_stream:
             config = yaml.load(cfg_stream, Loader=yaml.BaseLoader)
             self.client_id = config['intra']['client']
             self.client_secret = config['intra']['secret']
