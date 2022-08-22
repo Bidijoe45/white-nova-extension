@@ -28,10 +28,10 @@ def __get_api_locations(user_id_chunks: list, last_update: datetime) -> list:
 
 def sync_locations(session: Session, last_update: datetime) -> None:
 	user_id_chunks: list[list] = get_last_search_chunks(session, last_update)
+	if not user_id_chunks:
+		return
 	locations: list[dict] = __get_api_locations(user_id_chunks, last_update)
 	active_locations: Result = session.execute(select(Location.id).where(Location.end_at == None)).scalars().all()
-	print(locations)
-	print(active_locations)
 	locations_objs: list[Location] = []
 	for location in locations:
 		if location["id"] not in active_locations:

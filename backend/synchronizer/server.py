@@ -1,109 +1,86 @@
-import json
-import pendulum
-import datetime
-from db import DB
 from flask import Flask, Response, jsonify, request
-from intra import ic
+from utils import get_current_nova_start
+from datetime import timedelta, datetime
 
-ic.progress_bar=True
+import sqlite3
 
 class Server:
 	def __init__(self) -> None:
-		self.white_nova_start = pendulum.from_format('2022-07-15 10', 'YYYY-MM-DD HH')
 		self.app = Flask(__name__)
-		self.db: DB = DB()
+		self.white_nova_start = get_current_nova_start(datetime(2022, 7, 15, 10))
+		self.connection = sqlite3.connect('./db.sqlite', check_same_thread=False)
 		self.define_routes()
 		pass
 	
 	def define_routes(self) -> None:
-		self.app.add_url_rule("/", view_func=self.index)
+		self.app.add_url_rule("/<login>", view_func=self.index)
 
-	def index(self) -> Response:
-		options = request.args.to_dict()
-		user_login = options.get('login')
-		user = self.db.get_one_user(user_login)
-		if user:
-			self.db.update_field(user[1], "searched_at", "datetime('now')")
-			self.db.conn.commit()
-		return Response()
-
-	def index2(self) -> Response:
-		options = request.args.to_dict()
-		user_login = options.get('login') 
-		date_range = self.get_nova_range()
-		try:
-			time = self.get_time_between_dates(user_login, date_range['start'], date_range['end'])
-		except:
-			return jsonify({"ok": 0, "message": "Error"})
-		payload = {
-				"hours": time['hours'],
-				"minutes": time['minutes'],
-				"raw_hours": time['raw_hours'],
-				"start": date_range['start'].format("DD/MM/YYYY"),
-				"end": date_range['end'].format("DD/MM/YYYY"),
-				"evaluations": self.historic(),
-				"events": self.events(),
-				"next_cycle": int((date_range['end'].timestamp() - pendulum.now().timestamp()) / 60 / 60 / 24)
-		}
-
-		response = jsonify(payload)
-		response.headers.add('Access-Control-Allow-Origin', '*')
-		return response
-
-	def get_nova_range(self) -> dict:
-		actual_date = pendulum.now() 
-		end = self.white_nova_start.add(days=14)
-		while (actual_date.timestamp() >= end.timestamp()):
-			self.white_nova_start = self.white_nova_start.add(days=14)
-			end = end.add(days=14)
-
-		return {"start": self.white_nova_start, "end": end}
-
-	def get_time_between_dates(self, user_login, start_date, end_date) -> dict:
-		params = {
-			"begin_at": f"{start_date}",
-			"end_at": f"{end_date}"
-		}
-		locations = ic.get(f"/users/{user_login}/locations_stats", params=params)
-		total = datetime.timedelta()
-		for _, v in locations.json().items():
-			(h, m, s) = v.split(':')
-			total += datetime.timedelta(hours=int(h), minutes=int(m))
-		raw_hours = total.total_seconds() / 60 / 60
-		hours = int(total.total_seconds() / 60 / 60)
-		minutes = int((raw_hours - hours) * 60)
-
-		return {"hours": hours, "minutes": minutes, "raw_hours": raw_hours}
-
-	def historic(self) -> int:
-		options = request.args.to_dict()
-		user_login = options.get('login') 
-		date_range = self.get_nova_range()
-		params = {
-			"sort": "-created_at",
-			"filter[reason]": "Earning after defense",
-			"range[created_at]": f"{date_range['start'].to_date_string()},{date_range['end'].to_date_string()}"
-		}
-		try:
-			historic = ic.get(f"/users/{user_login}/correction_point_historics", params=params)
-		except:
-			return jsonify({"ok": 0})
+	def get_next_cycle(self) -> int:
+		nova_start: datetime = get_current_nova_start(self.white_nova_start)
+		nova_end: datetime = nova_start + timedelta(days=14)
+		next_cycle: int = nova_end - datetime.utcnow()
+		return next_cycle.days
 		
-		return len(historic.json())
 
-	def events(self) -> int:
-		options = request.args.to_dict()
-		user_login = options.get('login')
-		date_range = self.get_nova_range()
-		params = {
-			"sort": "-created_at",
-			"range[created_at]": f"{date_range['start'].to_date_string()},{date_range['end'].to_date_string()}"
+	def get_time(self, cursor: sqlite3.Cursor, user_id: int) -> dict:
+		row: tuple = cursor.execute("""
+		SELECT
+			SUM((JULIANDAY(
+				CASE WHEN end_at IS NULL
+				THEN DATETIME('now')
+				ELSE end_at
+				END
+			) - JULIANDAY(begin_at)) * 86400) AS hours
+		FROM locations
+		WHERE user_id=(?)
+		""", (user_id, )).fetchone()
+
+		if row is None:
+			return {
+					"hours": 0,
+					"minutes": 0
+				}
+
+		raw_hours: float = row[0] / 60 / 60
+		hours: int = int(raw_hours)
+
+		return {
+				"hours": hours,
+				"minutes": int((raw_hours - hours) * 60) 
+			}
+
+	def get_evaluations(self, cursor: sqlite3.Cursor, user_id: int) -> dict:
+		row: tuple = cursor.execute("SELECT COUNT(id) FROM scale_teams WHERE user_id=(?)", (user_id, )).fetchone()
+
+		if row is None:
+			return 0
+		return row[0]
+
+	def get_events():
+		pass
+
+	def index(self, login: str) -> Response:
+		cursor: sqlite3.Cursor = self.connection.cursor()
+		row: tuple = cursor.execute(f"SELECT id FROM users WHERE login=(?)", (login, )).fetchone()
+
+		if row is None:
+			return jsonify({
+				"error": True,
+				"message": "Login not valid"
+			})
+		
+		time: dict = self.get_time(cursor, row[0])
+
+		payload: dict = {
+				"hours": time["hours"],
+				"minutes": time["minutes"],
+				"evaluations": self.get_evaluations(cursor, row[0]),
+				"events": "",
+				"next_cycle": self.get_next_cycle()
 		}
-		try:
-			events = ic.get(f"/users/{user_login}/events_users", params=params)
-		except:
-			return jsonify({"ok": 0})
-		return len(events.json())
+
+		cursor.close()
+		return jsonify(payload)
 
 if __name__ == "__main__":
 	server: Server = Server()

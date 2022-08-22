@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from sqlalchemy import Column, ForeignKey, String, Integer, DateTime
 from sqlalchemy.orm import declarative_base, relationship
@@ -10,7 +10,7 @@ class User(Base):
 
     id = Column(Integer, primary_key=True, unique=True, autoincrement=False)
     login = Column(String(16), unique=True)
-    last_search = Column(DateTime, default=datetime.utcnow(), index=True)
+    last_search = Column(DateTime, default=(datetime.utcnow() - timedelta(days=1)), index=True)
 
     def __repr__(self) -> str:
         return f"User<id: {self.id}, login: {self.login}, last_search: {self.last_search}>"

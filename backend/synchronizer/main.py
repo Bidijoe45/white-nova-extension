@@ -1,6 +1,6 @@
 from os.path import exists
 from time import sleep
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from sqlalchemy import create_engine
 from sqlalchemy.ext.compiler import compiles
@@ -51,7 +51,7 @@ if __name__ == "__main__":
 				sync_feedbacks(session, last_run or white_nova_start)
 				session.commit()
 			print(f"[siva:backend/sync] Operation finished correctly at '{datetime.utcnow()}'")
-			last_run = sync_start
+			last_run = sync_start - timedelta(seconds=10)
 		except Exception as e:
 			print(f"[siva:backend/sync] Operation failed at '{datetime.utcnow()}' with error: '{e}'")
 			last_run = None

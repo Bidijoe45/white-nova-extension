@@ -17,11 +17,11 @@ def get_last_search_chunks(session: Session, last_update: datetime):
     search_last_update = last_update - timedelta(days=1)
     searched_users_ids_query = select(User.id).where(User.last_search >= search_last_update)
     searched_users_ids = session.execute(searched_users_ids_query)
-    return chunk_list(searched_users_ids.scalars().all(), 75)
+    return chunk_list(searched_users_ids.scalars().all(), 50)
 
 def get_current_nova_start(white_nova_start: datetime) -> datetime:
 	actual_date: datetime = datetime.utcnow() 
-	end: datetime = white_nova_start+ timedelta(days=14)
+	end: datetime = white_nova_start + timedelta(days=14)
 	while (actual_date.timestamp() >= end.timestamp()):
 		white_nova_start = white_nova_start + timedelta(days=14)
 		end = end + timedelta(days=14)

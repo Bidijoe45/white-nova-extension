@@ -3,3 +3,4 @@ venv
 __pycache__
 white-nova-chrome*
 white-nova-firefox
+.DS_Store

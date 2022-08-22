@@ -21,6 +21,8 @@ def __get_feedbacks(user_id_chunks: list, last_update: datetime) -> list:
 
 def	sync_feedbacks(session: Session, last_update: datetime) -> None:
 	user_id_chunks: list[list] = get_last_search_chunks(session, last_update)
+	if not user_id_chunks:
+		return
 	feedbacks: list[dict] = __get_feedbacks(user_id_chunks, last_update)
 	feedbacks_objs: list[Feedback] = []
 	whitenover_events = session.execute(select(Event.id)).scalars().all()
