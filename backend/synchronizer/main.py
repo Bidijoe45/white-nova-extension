@@ -1,12 +1,13 @@
+from datetime import datetime
 from os.path import exists
 from time import sleep
-from datetime import datetime, timedelta
 
 from sqlalchemy import create_engine
 from sqlalchemy.ext.compiler import compiles
 from sqlalchemy.sql.expression import Insert
 from sqlalchemy.engine import Engine
 from sqlalchemy.orm import Session
+from chron import Chron
 
 from models import Base
 from sync.users import sync_users
@@ -22,39 +23,27 @@ def insert_skip_unique(insert, compiler, **kw):
 	return compiler.visit_insert(insert.prefix_with("OR IGNORE"), **kw)
 
 def init_db() -> Engine:
-	engine = create_engine("sqlite:///db.sqlite", future=True)
+	engine = create_engine("sqlite:///../db.sqlite", future=True)
 	Base.metadata.create_all(engine)
 	return engine
 
 if __name__ == "__main__":
-	cursus_id: int = 21
-	campus_id: int = 22
-	event_string: str = "Evento Whitenover"
-	white_nova_start = get_current_nova_start(datetime(2022, 7, 15, 10))
 	engine: Engine = init_db()
-	last_run: datetime = None
+	chron = Chron(campus_id=22, cursus_id=21, default_last_run=get_current_nova_start(datetime(2022, 7, 15, 10)))
 
+	chron.add_job(sync_users, days=1, primary_object=True)
+	chron.add_job(sync_events, hours=8, primary_object=True)
+	chron.add_job(sync_feedbacks, minutes=5)
+	chron.add_job(sync_scale_teams, minutes=5)
+	chron.add_job(sync_locations, seconds=10)
 	while True:
-		if not exists("./db.sqlite"):
+		if not exists("../db.sqlite"):
 			engine = init_db()
-			last_run = None
+			chron.clear_run_history()
 		try:
-			print(f"[siva:backend/sync] Operation started at '{datetime.utcnow()}'")
-			sync_start: datetime = datetime.utcnow()
 			with Session(engine) as session:
-				session: Session = Session(engine)
 				session.execute("PRAGMA foreign_keys = ON;")
-				sync_users(session, last_run, cursus_id, campus_id)
-				sync_events(session, last_run or white_nova_start, campus_id, cursus_id)
-				sync_locations(session, last_run or white_nova_start)
-				sync_scale_teams(session, last_run or white_nova_start)
-				sync_feedbacks(session, last_run or white_nova_start)
-				session.commit()
-			print(f"[siva:backend/sync] Operation finished correctly at '{datetime.utcnow()}'")
-			last_run = sync_start - timedelta(seconds=10)
+				elapsed_time: int = chron.execute(session)
 		except Exception as e:
-			print(f"[siva:backend/sync] Operation failed at '{datetime.utcnow()}' with error: '{e}'")
-			last_run = None
-			sleep(1)
-			continue
-		sleep(5) # 86400s -> 1d
+			print(f"[siva:backend/synchronizer] Operation failed at '{datetime.utcnow()}' with error: '{e}'")
+		sleep(1)

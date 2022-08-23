@@ -22,5 +22,6 @@ Este repositorio se ha creado con una continua evolución en mente. Cualquier pe
 
 [@alvrodri](https://github.com/alvrodri)
 [@apavel](https://github.com/Bidijoe45)
+[@mmartin-](https://github.com/Mariomm-marti)
 [@npinto-g](https://github.com/bororama)
 [@ycarro](https://github.com/m00nbyt3)
