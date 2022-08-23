@@ -85,6 +85,7 @@ class Server:
 					"events": self.get_events(user_id),
 					"next_cycle": self.get_next_cycle()
 			}
+			session.commit()
 
 		return jsonify(payload)
 
