@@ -55,7 +55,7 @@ class ProgressBar {
 
     set text(value) {
         this.text_ = value;
-        this.progress_bar_text_.setHTML(this.text_);
+        this.progress_bar_text_.innerHTML = (this.text_);
     }
 
 }
@@ -77,18 +77,20 @@ class Application {
     }
 
     async init() {
-        const HTML_file = await fetch(browser.runtime.getURL("layout.html"));
+        const HTML_file = await fetch(chrome.runtime.getURL("layout.html"));
         const HTML_text = await HTML_file.text();
         const goals_container = document.getElementById("goals_container");
 
         this.getLogin();
         this.getCoalitionColor();
-        await this.getLoginData();
+        let validUser = await this.getLoginData();
 
-        goals_container.setHTML(goals_container.innerHTML + HTML_text);
+        if (!validUser)
+            return 
+
+        goals_container.innerHTML = (goals_container.innerHTML + HTML_text);
         goals_container.style.position = "relative";
 
-        //switch button
         this.switch_blackhole = document.getElementById("switch-blackhole");
         this.blackhole_body = document.getElementById("blackhole-date");
 
@@ -100,13 +102,13 @@ class Application {
 
         this.switch = new Switch(this.switch_nova, this.nova_body, this.switch_blackhole, this.blackhole_body);
         
-        //progress bar
         const progress_bar_container = document.getElementById("progress-bar-container");
         this.progress_bar = new ProgressBar(progress_bar_container, 50, "White Nova", this.coalition_color);
 
 		const contdown_text = document.getElementById('countdown-text');
-		contdown_text.setHTML(this.days_left + " days left until next cycle");
+		contdown_text.innerHTML = (this.days_left + " days left until next cycle");
 
+        this.addBlackHoleLeftDays();
         this.getPanelButtons();
         this.addButtonsEvents();
         this.setWhiteNovaProgressBar();
@@ -115,15 +117,23 @@ class Application {
     }
 
     async getLoginData() {
-        const response = await fetch("https://intranet-white-nova-kesbd7iw5q-ew.a.run.app?login=" + this.login);
-        const data = await response.json();
-        
+
+        const url = "http://localhost:8080/" + this.login;
+        const response = await fetch(url, { method: "GET"});
+        const data = await response.json()
+
+        if ("error" in data) {
+            return 
+        }
+
         this.evaluations = data.evaluations;
         this.events = data.events;
         this.hours = data.hours;
         this.minutes = data.minutes;
         this.days_left = data.next_cycle;
         this.raw_hours = data.raw_hours;
+
+        return true;
     }
 
     getPanelButtons() {
@@ -140,6 +150,26 @@ class Application {
     getCoalitionColor() {
         const progress_bar_element = document.getElementsByClassName("coalition-span")[0];
         this.coalition_color = progress_bar_element.style.color;
+    }
+
+    addBlackHoleLeftDays() {
+        const bhDate = document.getElementsByClassName("emote-bh");
+        let date = null;
+        
+        for (var i=0; i < bhDate.length; i++)
+            if ("originalTitle" in bhDate[i].dataset)
+                date = bhDate[i].dataset;
+
+        if (date == null) 
+            return
+
+        const parts = date.originalTitle.split("/");
+        const dt = new Date(parseInt(parts[2], 10),
+                          parseInt(parts[1], 10) - 1,
+                          parseInt(parts[0], 10));
+
+        const timestamp = dt.getTime() - new Date().getTime();
+        this.blackhole_body.append(Math.ceil(timestamp / 1000 / 60 / 60 / 24) + " days left");
     }
 
     addButtonsEvents() {
