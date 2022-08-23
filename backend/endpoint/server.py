@@ -75,7 +75,7 @@ class Server:
 				})
 			
 			user_id = result[0]
-			update(User).values({"last_search": datetime.utcnow()}).where(User.id == user_id)
+			session.execute(update(User).values({"last_search": datetime.utcnow()}).where(User.id == user_id))
 			time: dict = self.get_time(user_id)
 
 			payload: dict = {
