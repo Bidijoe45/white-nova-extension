@@ -6,7 +6,7 @@ from sqlalchemy import select, delete
 from intra import ic
 from models import Event
 
-def sync_events(session: Session, last_update: datetime, campus_id: int, cursus_id: int) -> None:
+def sync_events(session: Session, last_update: datetime, cursus_id: int, campus_id: int) -> None:
 	params: dict = {
 		"range[updated_at]": f"{last_update},{datetime.utcnow()}"
 	}
