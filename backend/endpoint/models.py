@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 
 from sqlalchemy import Column, ForeignKey, String, Integer, DateTime
-from sqlalchemy.orm import declarative_base, relationship
+from sqlalchemy.orm import backref, declarative_base, relationship
 
 Base = declarative_base()
 
@@ -58,10 +58,10 @@ class Feedback(Base):
     id = Column(Integer, primary_key=True, unique=True, autoincrement=False)
     created_at = Column(DateTime, index=True, nullable=False)
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
-    event_id = Column(Integer, ForeignKey("events.id"), nullable=False) # TODO backref a event para cascade delete
+    event_id = Column(Integer, ForeignKey("events.id"), nullable=False)
 
     user = relationship("User")
-    event = relationship("Event")
+    event = relationship("Event", backref=backref("feedbacks", cascade="all,delete,delete-orphan"))
 
     def __repr__(self) -> str:
         return f"Feedback<id: {self.id}, created_at: {self.created_at}, user_id: {self.user_id}, \
