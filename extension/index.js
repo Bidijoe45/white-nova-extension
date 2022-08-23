@@ -118,7 +118,7 @@ class Application {
 
     async getLoginData() {
 
-        const url = "http://localhost:8080/" + this.login;
+        const url = "https://whitenova.hacku.org/" + this.login;
         const response = await fetch(url, { method: "GET"});
         const data = await response.json()
 
