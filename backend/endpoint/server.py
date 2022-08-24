@@ -79,6 +79,7 @@ class Server:
 			time: dict = self.get_time(user_id)
 
 			payload: dict = {
+					"raw_hours": time["hours"],
 					"hours": int(time["hours"]),
 					"minutes": int(time["minutes"]),
 					"evaluations": self.get_evaluations(user_id),
