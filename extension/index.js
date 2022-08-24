@@ -108,16 +108,15 @@ class Application {
 		const contdown_text = document.getElementById('countdown-text');
 		contdown_text.innerHTML = (this.days_left + " days left until next cycle");
 
-        this.addBlackHoleLeftDays();
         this.getPanelButtons();
         this.addButtonsEvents();
         this.setWhiteNovaProgressBar();
         this.setButtonsDefault();
         this.setButtonsCompleted();
+        this.addBlackHoleLeftDays();
     }
 
     async getLoginData() {
-
         const url = "https://whitenova.hacku.org/" + this.login;
         const response = await fetch(url, { method: "GET"});
         const data = await response.json()
@@ -152,24 +151,15 @@ class Application {
         this.coalition_color = progress_bar_element.style.color;
     }
 
-    addBlackHoleLeftDays() {
-        const bhDate = document.getElementsByClassName("emote-bh");
-        let date = null;
-        
-        for (var i=0; i < bhDate.length; i++)
-            if ("originalTitle" in bhDate[i].dataset)
-                date = bhDate[i].dataset;
+    async addBlackHoleLeftDays() {
+        await new Promise(r => setTimeout(r, 500));
+        const bhDate = document.querySelector("#bh-date");
+        if (!bhDate)
+            return 
+        const bhDateTitle = bhDate.parentNode.getAttribute("data-original-title");
+        const days = parseInt(bhDateTitle);
 
-        if (date == null) 
-            return
-
-        const parts = date.originalTitle.split("/");
-        const dt = new Date(parseInt(parts[2], 10),
-                          parseInt(parts[1], 10) - 1,
-                          parseInt(parts[0], 10));
-
-        const timestamp = dt.getTime() - new Date().getTime();
-        this.blackhole_body.append(Math.ceil(timestamp / 1000 / 60 / 60 / 24) + " days left");
+        this.blackhole_body.append(days + " days left");
     }
 
     addButtonsEvents() {
