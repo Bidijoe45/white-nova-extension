@@ -2,13 +2,13 @@
 	"name": "Intra42Nova",
 	"description": "",
 	"author": "apavel ycarro alvrodri",
-	"version": "1.0",
+	"version": "2.0.1",
 	"manifest_version": 2,
 	"web_accessible_resources":[
 		"layout.html"
   	],
 	"permissions": [
-		"*://intranet-white-nova-kesbd7iw5q-ew.a.run.app/*"
+		"https://whitenova.hacku.org/*"
 	],
 	"content_scripts": [{
         "run_at": "document_end",
