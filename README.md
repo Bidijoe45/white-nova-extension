@@ -11,7 +11,7 @@ Hay que tener en cuenta que es un trabajo en progreso, existen numerosos fallos 
 ### INSTALACIÓN
 
 - **Chrome:** se puede descargar de la [store de chrome](https://chrome.google.com/webstore/detail/intra42nova/fnehnflgpiaemngoknikolkcgcigabhc)
-- **Firefox:** se puede descargar de las releases de github [aquí](https://github.com/Bidijoe45/white-nova-extension/releases/download/1.0.0/intra42whitenova-1.0.xpi)
+- **Firefox:** se puede descargar de las releases de github [aquí](https://github.com/Bidijoe45/white-nova-extension/releases/latest/download/intra42whitenova-firefox.xpi)
 
 
 ### CONTRIBUCIONES
