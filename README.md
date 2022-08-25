@@ -14,7 +14,7 @@ Consiste en una interfaz integrada a la página de perfil que contiene toda la i
 - **Firefox:** se puede descargar de las releases de github [aquí](https://github.com/Bidijoe45/white-nova-extension/releases/latest/download/intra42whitenova-firefox.xpi)
 
 ### Por qué se ha creado la extensión
-Para calcular si se cumplem los requistos de Whitenova hay que hacer una serie de llamadas a la API de 42 que son muy costosas en cuanto a tiempo de respuesta.
+Para calcular si se cumplen los requistos de Whitenova hay que hacer una serie de llamadas a la API de 42 que son muy costosas en cuanto a tiempo de respuesta.
 
 Para solucionar este problema se ha implementado una base de datos que es alimentada por un proceso "sincronizador" que se encarga de hacer llamadas a la API de 42 periódicamente.
 
