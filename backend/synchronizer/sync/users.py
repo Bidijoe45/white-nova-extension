@@ -9,6 +9,7 @@ def sync_users(session: Session, from_date: datetime, cursus_id: int, campus_id:
 	if from_date is None:
 		from_date = datetime(1970, 1, 1)
 	params: dict = {
+		"filter[user_id]": 65996, #remove before prod
 		"filter[campus_id]": campus_id,
 		"flter[blackhole]": False,
 		"range[created_at]": f"{from_date},{datetime.utcnow()}"

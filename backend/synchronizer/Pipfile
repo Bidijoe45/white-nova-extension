@@ -10,6 +10,7 @@ requests = "*"
 certifi = "==2017.4.17"
 tqdm = "*"
 pygments = "*"
+flask = "*"
 
 [dev-packages]
 
