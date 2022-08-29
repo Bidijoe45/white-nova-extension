@@ -29,7 +29,8 @@ class Server:
 	def get_time(self, user_id: int) -> dict:
 		with Session(self.engine) as session:
 			white_nova_range = get_current_nova_range(self.white_nova_start)
-			query = select(Location).where(Location.user_id == user_id and Location.created_at >= white_nova_range["start"])
+			print(white_nova_range)
+			query = select(Location).where(Location.user_id == user_id, Location.created_at >= white_nova_range["start"])
 			locations = session.execute(query).scalars().all()
 			total_seconds = 0
 			for location in locations:
@@ -47,7 +48,7 @@ class Server:
 	def get_evaluations(self, user_id: int) -> dict:
 		with Session(self.engine) as session:
 			white_nova_range = get_current_nova_range(self.white_nova_start)
-			query = select(ScaleTeam).where(ScaleTeam.user_id == user_id and ScaleTeam.filled_at >= white_nova_range["start"])
+			query = select(ScaleTeam).where(ScaleTeam.user_id == user_id, ScaleTeam.filled_at >= white_nova_range["start"])
 			scale_teams = session.execute(query).scalars().all()
 
 			return len(scale_teams)
@@ -55,7 +56,7 @@ class Server:
 	def get_events(self, user_id: int) -> int:
 		with Session(self.engine) as session:
 			white_nova_range = get_current_nova_range(self.white_nova_start)
-			query = select(Feedback).where(Feedback.user_id == user_id and Feedback.created_at >= white_nova_range["start"])
+			query = select(Feedback).where(Feedback.user_id == user_id, Feedback.created_at >= white_nova_range["start"])
 			feedbacks = session.execute(query).scalars().all()
 
 			if feedbacks is None:
