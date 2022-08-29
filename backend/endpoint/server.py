@@ -29,7 +29,6 @@ class Server:
 	def get_time(self, user_id: int) -> dict:
 		with Session(self.engine) as session:
 			white_nova_range = get_current_nova_range(self.white_nova_start)
-			print(white_nova_range)
 			query = select(Location).where(Location.user_id == user_id, Location.created_at >= white_nova_range["start"])
 			locations = session.execute(query).scalars().all()
 			total_seconds = 0
