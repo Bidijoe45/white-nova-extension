@@ -26,8 +26,12 @@ def __get_api_locations(user_id_chunks: list, last_update: datetime) -> list:
 		locations.append(locations_active)
 	return [item for sublist in locations for item in sublist]
 
-def sync_locations(session: Session, last_update: datetime) -> None:
-	user_id_chunks: list[list] = get_last_search_chunks(session, last_update)
+def sync_locations(session: Session, last_update: datetime, users_ids: list = None) -> None:
+	user_id_chunks: list[list] = []
+	if users_ids is None:
+		user_id_chunks: list[list] = get_last_search_chunks(session, last_update)
+	else:
+		user_id_chunks.append(users_ids)
 	if not user_id_chunks:
 		return
 	locations: list[dict] = __get_api_locations(user_id_chunks, last_update)
@@ -47,3 +51,4 @@ def sync_locations(session: Session, last_update: datetime) -> None:
 				.values({"end_at": strtodate(location["end_at"])})
 				.where(Location.id == location["id"]))
 	session.add_all(locations_objs)
+

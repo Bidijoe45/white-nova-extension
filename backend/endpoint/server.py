@@ -1,10 +1,12 @@
 from datetime import timedelta, datetime
+from threading import Thread
 
 from flask import Flask, Response, jsonify
 from flask_cors import CORS
 from sqlalchemy import create_engine, update
 from sqlalchemy.orm import Session
 from sqlalchemy import select
+import requests
 
 from utils import get_current_nova_range
 from models import Location, ScaleTeam, User, Feedback
@@ -29,7 +31,7 @@ class Server:
 	def get_time(self, user_id: int) -> dict:
 		with Session(self.engine) as session:
 			white_nova_range = get_current_nova_range(self.white_nova_start)
-			query = select(Location).where(Location.user_id == user_id, Location.created_at >= white_nova_range["start"])
+			query = select(Location).where(Location.user_id == user_id, Location.begin_at >= white_nova_range["start"])
 			locations = session.execute(query).scalars().all()
 			total_seconds = 0
 			for location in locations:
@@ -63,9 +65,13 @@ class Server:
 
 		return len(feedbacks)				
 
+	def synchronizer_call(self, id):
+		requests.get("http://localhost:8081/sync/" + str(id))
+		pass
+
 	def index(self, login: str) -> Response:
 		with Session(self.engine) as session:
-			query = select(User.id).where(User.login == login)
+			query = select(User.id, User.last_search).where(User.login == login)
 			result = session.execute(query).fetchone()
 			
 			if result is None:
@@ -73,7 +79,12 @@ class Server:
 					"error": True,
 					"message": "Login not valid"
 				})
-			
+
+			if result.last_search < (datetime.utcnow() - timedelta(days=1)):
+				print("entra", result.id);
+				sync_call = Thread(target=self.synchronizer_call, args=(result.id,))
+				sync_call.start()
+		
 			user_id = result[0]
 			session.execute(update(User).values({"last_search": datetime.utcnow()}).where(User.id == user_id))
 			time: dict = self.get_time(user_id)
