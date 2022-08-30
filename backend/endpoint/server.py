@@ -31,7 +31,7 @@ class Server:
 	def get_time(self, user_id: int) -> dict:
 		with Session(self.engine) as session:
 			white_nova_range = get_current_nova_range(self.white_nova_start)
-			query = select(Location).where(Location.user_id == user_id and Location.created_at >= white_nova_range["start"])
+			query = select(Location).where(Location.user_id == user_id, Location.begin_at >= white_nova_range["start"])
 			locations = session.execute(query).scalars().all()
 			total_seconds = 0
 			for location in locations:
@@ -49,7 +49,7 @@ class Server:
 	def get_evaluations(self, user_id: int) -> dict:
 		with Session(self.engine) as session:
 			white_nova_range = get_current_nova_range(self.white_nova_start)
-			query = select(ScaleTeam).where(ScaleTeam.user_id == user_id and ScaleTeam.filled_at >= white_nova_range["start"])
+			query = select(ScaleTeam).where(ScaleTeam.user_id == user_id, ScaleTeam.filled_at >= white_nova_range["start"])
 			scale_teams = session.execute(query).scalars().all()
 
 			return len(scale_teams)
@@ -57,7 +57,7 @@ class Server:
 	def get_events(self, user_id: int) -> int:
 		with Session(self.engine) as session:
 			white_nova_range = get_current_nova_range(self.white_nova_start)
-			query = select(Feedback).where(Feedback.user_id == user_id and Feedback.created_at >= white_nova_range["start"])
+			query = select(Feedback).where(Feedback.user_id == user_id, Feedback.created_at >= white_nova_range["start"])
 			feedbacks = session.execute(query).scalars().all()
 
 			if feedbacks is None:
@@ -66,7 +66,7 @@ class Server:
 		return len(feedbacks)				
 
 	def synchronizer_call(self, id):
-		requests.get("localhost:8081/" + id)
+		requests.get("http://localhost:8081/sync/" + str(id))
 		pass
 
 	def index(self, login: str) -> Response:
@@ -82,7 +82,8 @@ class Server:
 
 			if result.last_search < (datetime.utcnow() - timedelta(days=1)):
 				print("entra", result.id);
-				Thread(target=self.synchronizer_call, args=(result.id,))
+				sync_call = Thread(target=self.synchronizer_call, args=(result.id,))
+				sync_call.start()
 		
 			user_id = result[0]
 			session.execute(update(User).values({"last_search": datetime.utcnow()}).where(User.id == user_id))

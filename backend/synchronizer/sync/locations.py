@@ -26,7 +26,7 @@ def __get_api_locations(user_id_chunks: list, last_update: datetime) -> list:
 		locations.append(locations_active)
 	return [item for sublist in locations for item in sublist]
 
-def sync_locations(session: Session, last_update: datetime, users_ids: list) -> None:
+def sync_locations(session: Session, last_update: datetime, users_ids: list = None) -> None:
 	user_id_chunks: list[list] = []
 	if users_ids is None:
 		user_id_chunks: list[list] = get_last_search_chunks(session, last_update)
@@ -35,7 +35,6 @@ def sync_locations(session: Session, last_update: datetime, users_ids: list) -> 
 	if not user_id_chunks:
 		return
 	locations: list[dict] = __get_api_locations(user_id_chunks, last_update)
-	print(locations)
 	active_locations: Result = session.execute(select(Location.id).where(Location.end_at == None)).scalars().all()
 	locations_objs: list[Location] = []
 	for location in locations:

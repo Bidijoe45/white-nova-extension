@@ -17,7 +17,7 @@ def __get_scale_teams(user_id_chunks: list, last_update: datetime) -> dict:
 		scale_teams.append(scale_teams_page)
 	return [item for sublist in scale_teams for item in sublist]
 
-def	sync_scale_teams(session: Session, last_update: datetime, users_ids: list) -> None:
+def	sync_scale_teams(session: Session, last_update: datetime, users_ids: list = None) -> None:
 	user_id_chunks: list[list] = []
 	if users_ids is None:
 		user_id_chunks: list[list] = get_last_search_chunks(session, last_update)

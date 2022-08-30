@@ -18,7 +18,7 @@ class SyncEndpoint:
         self.app = Flask(__name__)
 
     def sync_user_data(self, id):
-        print(id)
+        print("Sync endpoint:", id)
         with Session(self.engine) as session:
             session.execute("PRAGMA foreign_keys = ON;")
             white_nova_start: datetime = get_current_nova_start(self.white_nova_start)

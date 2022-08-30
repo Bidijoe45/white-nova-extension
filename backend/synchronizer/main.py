@@ -52,6 +52,7 @@ def database_synchronizer(engine):
 	
 if __name__ == "__main__":
 	engine: Engine = init_db()
-	sync_thread: Thread = Thread(target=database_synchronizer, args=(engine,)) 
+	sync_thread: Thread = Thread(target=database_synchronizer, args=(engine,), daemon=True) 
+	sync_thread.start()
 	sync_endpoint = SyncEndpoint(engine, 22, 21, datetime(2022, 7, 15, 10))
 	sync_endpoint.run()
