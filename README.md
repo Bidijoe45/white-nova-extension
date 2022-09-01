@@ -1,4 +1,4 @@
-# Extensión white nova -  Blazingly fast 🔥
+# Extensión white nova
 
 Se ha creado esta pequeña extensión de navegador para que los estudiantes de 42 Madrid puedan consultar su estado y el de otros estudiantes desde la comodidad de la intranet.
 
@@ -39,4 +39,4 @@ Este repositorio se ha creado con una continua evolución en mente. Cualquier pe
 [@ycarro](https://github.com/m00nbyt3)
 
 
-___made with ❤ for students by students___
+___🔥 made with ❤ for students by students___
