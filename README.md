@@ -40,3 +40,5 @@ Este repositorio se ha creado con una continua evolución en mente. Cualquier pe
 
 
 ___🔥 made with ❤ for students by students___
+
+**Aviso:** Esta es una herramienta no oficial, los desarrolladores no se hacen responsables de los errores a la hora del calculo para cumplir el WhiteNova.
