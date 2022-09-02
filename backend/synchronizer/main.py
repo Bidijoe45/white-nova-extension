@@ -35,7 +35,7 @@ def database_synchronizer(engine):
 	chron.add_job(sync_events, hours=8, primary_object=True)
 	chron.add_job(sync_feedbacks, minutes=5)
 	chron.add_job(sync_scale_teams, minutes=5)
-	chron.add_job(sync_locations, seconds=10)
+	chron.add_job(sync_locations, minutes=1)
 
 	while True:
 		if not exists("../db.sqlite"):
