@@ -28,17 +28,26 @@ class Server:
 		next_cycle: int = nova_end - datetime.utcnow()
 		return next_cycle.days
 
+	"""
+	-------S-----|-------E------------|-------------
+	"""
+
 	def get_time(self, user_id: int) -> dict:
 		with Session(self.engine) as session:
 			white_nova_range = get_current_nova_range(self.white_nova_start)
-			query = select(Location).where(Location.user_id == user_id, Location.begin_at >= white_nova_range["start"])
+			white_nova_start_offset = white_nova_range["start"] - timedelta(days=1)
+			query = select(Location).where(Location.user_id == user_id, Location.begin_at >= white_nova_start_offset)
 			locations = session.execute(query).scalars().all()
 			total_seconds = 0
 			for location in locations:
+				if location.end_at is not None and location.end_at < white_nova_range["start"]:
+					continue
 				location_start = location.begin_at
 				location_end = datetime.now() 
 				if location.end_at is not None:
 					location_end = location.end_at
+				if location_start < white_nova_range["start"] and location_end > white_nova_range["start"]:
+					location_start = white_nova_range["start"]
 				total_seconds += (location_end.timestamp() - location_start.timestamp())
 			hours = total_seconds / 60 / 60 
 		return {
@@ -80,10 +89,10 @@ class Server:
 					"message": "Login not valid"
 				})
 
-			if result.last_search < (datetime.utcnow() - timedelta(days=1)):
-				print("entra", result.id);
-				sync_call = Thread(target=self.synchronizer_call, args=(result.id,))
-				sync_call.start()
+			# if result.last_search < (datetime.utcnow() - timedelta(days=1)):
+			# 	print("entra", result.id);
+			# 	sync_call = Thread(target=self.synchronizer_call, args=(result.id,))
+			# 	sync_call.start()
 		
 			user_id = result[0]
 			session.execute(update(User).values({"last_search": datetime.utcnow()}).where(User.id == user_id))
