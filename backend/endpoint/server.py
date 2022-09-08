@@ -28,10 +28,6 @@ class Server:
 		next_cycle: int = nova_end - datetime.utcnow()
 		return next_cycle.days
 
-	"""
-	-------S-----|-------E------------|-------------
-	"""
-
 	def get_time(self, user_id: int) -> dict:
 		with Session(self.engine) as session:
 			white_nova_range = get_current_nova_range(self.white_nova_start)
@@ -39,16 +35,20 @@ class Server:
 			query = select(Location).where(Location.user_id == user_id, Location.begin_at >= white_nova_start_offset)
 			locations = session.execute(query).scalars().all()
 			total_seconds = 0
+			last_location_end = None
 			for location in locations:
 				if location.end_at is not None and location.end_at < white_nova_range["start"]:
 					continue
 				location_start = location.begin_at
-				location_end = datetime.now() 
+				location_end = datetime.utcnow() 
 				if location.end_at is not None:
 					location_end = location.end_at
 				if location_start < white_nova_range["start"] and location_end > white_nova_range["start"]:
 					location_start = white_nova_range["start"]
+				if last_location_end is not None and last_location_end > location_start:
+					location_start = last_location_end
 				total_seconds += (location_end.timestamp() - location_start.timestamp())
+				last_location_end = location_end
 			hours = total_seconds / 60 / 60 
 		return {
 				"hours": hours,
