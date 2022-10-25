@@ -80,6 +80,11 @@ class Application {
         const HTML_file = await fetch(chrome.runtime.getURL("layout.html"));
         const HTML_text = await HTML_file.text();
         const goals_container = document.getElementById("goals_container");
+        const modern_container = document.getElementById("modern-container");
+        const pills_container = modern_container.querySelector('[role=tablist]');
+
+        if (pills_container != null)
+            return
 
         this.getLogin();
         this.getCoalitionColor();
