@@ -92,7 +92,7 @@ class Application {
         goals_container.style.position = "relative";
 
         this.switch_blackhole = document.getElementById("switch-blackhole");
-        this.blackhole_body = document.getElementById("blackhole-date");
+        this.blackhole_body = document.getElementById("modern-blackhole-date");
 
         this.switch_nova = document.getElementById("switch-nova");
         this.nova_body = document.getElementById("nova-body");
