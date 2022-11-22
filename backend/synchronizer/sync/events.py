@@ -14,7 +14,7 @@ def sync_events(session: Session, last_update: datetime, cursus_id: int, campus_
 	events_objs: list[Event] = []
 	current_events: list[int] = session.execute(select(Event.id).where(Event.end_at >= last_update)).scalars().all()
 	for event in events:
-		if event["id"] in current_events and "Evento Whitenover" not in event["description"]:
+		if event["id"] in current_events and "Evento Whitenover" not in event["description"].tolower():
 			session.execute(delete(Event).where(Event.id == event["id"]))
 			continue
 		if "Evento Whitenover" not in event["description"]:
