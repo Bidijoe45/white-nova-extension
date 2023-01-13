@@ -15,7 +15,7 @@ def sync_users(session: Session, from_date: datetime, cursus_id: int, campus_id:
 		from_date = datetime(1970, 1, 1)
 	params: dict = {
 		"filter[campus_id]": campus_id,
-		"flter[blackhole]": False,
+		"filter[blackhole]": False,
 		"range[created_at]": f"{from_date},{datetime.utcnow()}"
 	}
 	cursus_users = ic.pages_threaded(f"cursus/{cursus_id}/cursus_users", params=params)
