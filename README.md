@@ -1,6 +1,6 @@
 # Extensión white nova (OBSOLETO)
 
-La extension ya no funciona debido a que en 42Madrid el sistema white nova ha sido cambiado y esta extensión todavia no se ha adaptado a los nuevos cambios.
+La extensión ya no funciona debido a que en 42Madrid el sistema white nova ha sido cambiado y esta extensión todavía no se ha adaptado a los nuevos cambios.
 
 ---
 
