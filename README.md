@@ -1,4 +1,8 @@
-# Extensión white nova
+# Extensión white nova (OBSOLETO)
+
+La extension ya no funciona debido a que en 42Madrid el sistema white nova ha sido cambiado y esta extensión todavia no se ha adaptado a los nuevos cambios.
+
+---
 
 Se ha creado esta pequeña extensión de navegador para que los estudiantes de 42 Madrid puedan consultar su estado y el de otros estudiantes desde la comodidad de la intranet.
 
